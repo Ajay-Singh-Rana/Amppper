@@ -14,15 +14,41 @@ from tkinter import messagebox
 import threading
 import time
 
-
-# frame for changing audio formats
-class ChangeFormat(tk.Frame):
-    def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
-        self.controller = controller
-        self.config(bg = '#2AA2BC')
+class Browse:
+    def __init__(self):
         self.filename = ''
         self.thread = 0
+
+    def browse(self):
+        self.filename = filedialog.askopenfilename()
+        if(self.filename):
+            self.label.config(text = os.path.split(self.filename)[1])
+
+# frame for trimming an audio file
+class Trim(tk.Frame,Browse):
+    def __init__(self,parent,controller):
+        tk.Frame.__init__(self,parent)
+        Browse.__init__(self)
+        self.controller = controller
+        self.config(bg = '#2AA2BC')
+
+        self.label = tk.Label(self,text = '---Empty Selection---',width = 20,pady = 5,bg = '#ee3456')
+        self.label.grid(row = 0,column = 0,padx = 10,pady = 10)
+
+        self.add = tk.Button(self,text = 'Select File',bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10,command = self.browse)
+        self.add.grid(row = 0,column = 1,padx = 10,pady = 10)
+
+        #self.status = tk.Label(self,text = 'No Process..!',width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+
+
+
+# frame for changing audio formats
+class ChangeFormat(tk.Frame,Browse):
+    def __init__(self,parent,controller):
+        tk.Frame.__init__(self,parent)
+        Browse.__init__(self)
+        self.controller = controller
+        self.config(bg = '#2AA2BC')
 
         self.label = tk.Label(self,text = '---Empty Selection---',width = 20,pady = 5,bg = '#ee3456')
         self.label.grid(row = 0,column = 0,padx = 10,pady = 20)
@@ -74,11 +100,6 @@ class ChangeFormat(tk.Frame):
             time.sleep(1)
             self.queue.config(bg = '#ae34d9')
             self.status.config(text = 'No process..!',bg = '#ae34d9')
-
-    def browse(self):
-        self.filename = filedialog.askopenfilename()
-        if(self.filename):
-            self.label.config(text = os.path.split(self.filename)[1])
 
 
 # frame for joining audio files
@@ -173,9 +194,6 @@ class AudioEditor(tk.Frame):
     def __init__(self,parent,controller):
         tk.Frame.__init__(self,parent)
         self.controller = controller
-        #self.geometry('610x450')
-        #self.title('Amppper Audio Tools')
-        #self.resizable(False,False)
         self.frames = {}
         self.background = tk.PhotoImage(file = 'icons/amppper.png')
         im_height,im_width = self.background.height(), self.background.width()
@@ -198,7 +216,7 @@ class AudioEditor(tk.Frame):
         button.place(x = 230,y = 30)
 
 
-        for f in (JoinAudio,ChangeFormat):
+        for f in (JoinAudio,ChangeFormat,Trim):
             page_name = f.__name__
             frame = f(parent = container,controller = self)
             self.frames[page_name] = frame
