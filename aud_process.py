@@ -47,15 +47,25 @@ class Trim(tk.Frame,Browse):
         bg = '#aa89ca',relief = 'sunken')
         self.display_length.grid(row = 1,column = 0,columnspan = 2)
 
-        #self.status = tk.Label(self,text = 'No Process..!',width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.to_label = tk.Label(self,bg = '#2AA2BC')
+        self.to_label.grid(row = 2,column = 0,padx = 10,pady = 10)
+
+        self.to = tk.Label(self.to_label,bg = '#2AA2BC',text = 'From:')
+        self.to.grid(row = 0,column = 0)
+
+        self.to_spin = tk.Spinbox(self.to_label,relief = 'sunken',
+        selectbackground = '#aa348c',state = 'disable')
+        self.to_spin.grid(row = 0,column = 1)
+
 
     def browse(self):
         Browse.browse(self)
         try:
             audio = AudioSegment.from_file(self.filename)
             duration = audio.duration_seconds
-            self.dispaly_length.config(text = 'Duration : {:02d} secs'.format(duration))
+            self.display_length.config(text = 'Duration : {:.2f} secs'.format(duration))
         except:
+            self.label.config(text = '---Empty Selection---')
             messagebox.showerror(title = 'Error',message = 'Incompatible file format..!')
 
 # frame for changing audio formats
@@ -120,6 +130,7 @@ class ChangeFormat(tk.Frame,Browse):
                     self.status.config(text = 'Success..!',bg = '#2a8d12')
                 except:
                     self.status.config(text = 'Failed..!',bg = '#ee3456')
+                    messagebox.showerror(title = 'Error...',message = 'Incompatible file..!')
         else:
             messagebox.showerror(title = 'Error...',message = 'Select a file to convert..!')
         
@@ -224,6 +235,8 @@ class JoinAudio(tk.Frame,Browse):
                     final.export(filename,format = format_[ext])
                     self.label.config(text = 'Success..!',bg = '#2a8d12')
                 except:
+                    self.file_label_1.config(text = '---Empty Selection---')
+                    self.file_label_2.config(text = '---Empty Selection---')
                     self.label.config(text = 'Failed..!',bg = '#ee3456')
                     messagebox.showerror(title = 'Error',message = 'Incompatible file format')
 
@@ -255,20 +268,25 @@ class AudioEditor(tk.Frame):
         container = tk.Frame(self,width = 300,height = 250)
         container.place(x = 155,y = 160)
 
+        trim = tk.Button(background,text = 'Trim',width= 5,
+        command = lambda:self.show_frame('Trim','Trim'),relief = 'flat',
+        bg = '#2abc8d',activebackground = '#aabc8d')
+        trim.place(x = 30,y = 30)
+
         button = tk.Button(background,text = 'Convert',width = 5,
         command = lambda:self.show_frame('ChangeFormat','Convert'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
-        button.place(x = 30,y = 30)
+        button.place(x = 130,y = 30)
 
         audio_join = tk.Button(background,text = 'Join',width = 5,
         command = lambda:self.show_frame('JoinAudio','Join Audio'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
-        audio_join.place(x = 130,y = 30)
+        audio_join.place(x = 230,y = 30)
         
         button = tk.Button(background,text = 'Home',width = 5,
         command = lambda:self.controller.show_frame('MainFrame'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
-        button.place(x = 230,y = 30)
+        button.place(x = 330,y = 30)
 
 
         for f in (JoinAudio,ChangeFormat,Trim):
@@ -280,4 +298,4 @@ class AudioEditor(tk.Frame):
     def show_frame(self,page_name,title):
         frame = self.frames[page_name]
         frame.tkraise()
-        self.controller.title(f'Amppper: Audio Tools -> {title}')
+        self.controller.title(f'Amppper -> Audio Tools -> {title}')
