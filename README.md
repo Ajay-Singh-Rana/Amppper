@@ -23,5 +23,6 @@ A GUI application with the following featues:
     - Text to PDF
     
 ### Screenshots
-  ![Main Window](https://i.imgur.com/obofvrT.png)! 
-  [Join Frame](https://i.imgur.com/vUrj8w1.png)
+   Main Window                                     |     Join Frame
+   :----------------------------------------------:|:----------------------------------------------:
+   ![Main Window](https://i.imgur.com/obofvrT.png) | ![Join Frame](https://i.imgur.com/vUrj8w1.png)
