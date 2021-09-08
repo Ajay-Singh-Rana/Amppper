@@ -18,6 +18,7 @@ class MainFrame(tk.Frame):
     def __init__(self,parent,controller):
         tk.Frame.__init__(self,parent)
         self.controller = controller
+        self.controller.title('Amppper')
 
         self.background = tk.PhotoImage(file = 'icons/amppper.png')
         im_height,im_width = self.background.height(), self.background.width()
@@ -30,7 +31,7 @@ class MainFrame(tk.Frame):
         img_button = tk.Button(background,text = 'Image Options',pady = 5,padx = 5,width = 15,command = self.image_options,relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
         img_button.place(x = 420, y = 170)
 
-        audio_button = tk.Button(background,text = 'Audio Options',pady = 5,padx = 5,width = 15,command = lambda:self.controller.show_frame('AudioEditor'),relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
+        audio_button = tk.Button(background,text = 'Audio Options',pady = 5,padx = 5,width = 15,command = lambda:self.controller.show_frame('AudioEditor','Audio Tools -> Trim'),relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
         audio_button.place(x = 420, y = 210)
 
         video_button = tk.Button(background,text = 'Video Options',pady = 5,padx = 5,width = 15,command = self.video_options,relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
@@ -82,9 +83,13 @@ class App(tk.Tk):
             self.frames[page_name] = frame
             frame.grid(row = 0,column = 0,sticky = 'nesw')
         
-    def show_frame(self,name):
+    def show_frame(self,name,title = ''):
         frame = self.frames[name]
         frame.tkraise()
+        if(title):
+            self.title(f'Amppper -> {title}')
+        else:
+            self.title('Amppper')
 
 if __name__ == "__main__":
     app = App()
