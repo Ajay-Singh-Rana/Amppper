@@ -23,6 +23,6 @@ A GUI application with the following featues:
     - Text to PDF
     
 ### Screenshots
-   Main Window                                     |     Join Frame
+   Main Window                                     |     Audio Tools Window
    :----------------------------------------------:|:----------------------------------------------:
-   ![Main Window](https://i.imgur.com/obofvrT.png) | ![Join Frame](https://i.imgur.com/vUrj8w1.png)
+   ![Main Window](https://i.imgur.com/obofvrT.png) | ![Audio Tools Window](https://imgur.com/obofvrT)
