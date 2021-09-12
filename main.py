@@ -1,15 +1,17 @@
 # h3avren
 
 """
-This is the GUI part of the application. This is where the GUI of the application is defined.
+This is the GUI part of the application. 
+This is where the GUI of the application is defined.
 """
 
 # imports
-import tkinter as tk    # importing the tkinter library as this is what we will be using to create the GUI
+import tkinter as tk
 from tkinter import filedialog
 from img_process import ImageEditor
 from aud_process import AudioEditor
 import os
+from vid_process import VideoEditor
 
 if(not os.path.isdir('Amppper')):
     os.mkdir('Amppper')
@@ -28,13 +30,21 @@ class MainFrame(tk.Frame):
 
         background.create_image(0,0,image = self.background,anchor = 'nw')
 
-        img_button = tk.Button(background,text = 'Image Options',pady = 5,padx = 5,width = 15,command = self.image_options,relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
+        img_button = tk.Button(background,text = 'Image Options',pady = 5,
+        padx = 5,width = 15,command = self.image_options,relief = 'flat',
+        bg = '#2abc8d',activebackground = '#aabc8d')
         img_button.place(x = 420, y = 170)
 
-        audio_button = tk.Button(background,text = 'Audio Options',pady = 5,padx = 5,width = 15,command = lambda:self.controller.show_frame('AudioEditor','Audio Tools -> Trim'),relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
+        audio_button = tk.Button(background,text = 'Audio Options',pady = 5,
+        padx = 5,width = 15,
+        command = lambda:self.controller.show_frame('AudioEditor','Audio Tools -> Trim'),
+        relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
         audio_button.place(x = 420, y = 210)
 
-        video_button = tk.Button(background,text = 'Video Options',pady = 5,padx = 5,width = 15,command = self.video_options,relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
+        video_button = tk.Button(background,text = 'Video Options',pady = 5,
+        padx = 5,width = 15,
+        command = lambda: self.controller.show_frame('VideoEditor','Video Tools -> Join'),
+        relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
         video_button.place(x = 420, y = 250)
 
     def image_options(self):
@@ -50,7 +60,8 @@ class MainFrame(tk.Frame):
         create = tk.Button(popup,text = 'Create an Image',padx = 5,pady = 5,width = 15)
         create.pack(padx = 5,pady = 5)
 
-        edit = tk.Button(popup,text = 'Edit an Image',padx = 5,pady = 5,width = 15,command = img_select)
+        edit = tk.Button(popup,text = 'Edit an Image',padx = 5,pady = 5,
+        width = 15,command = img_select)
         edit.pack(padx = 5,pady = 5)
         
  
@@ -77,7 +88,7 @@ class App(tk.Tk):
         background = tk.Frame(self)
         background.pack(fill = 'both',expand = True)
 
-        for f in (AudioEditor,MainFrame):
+        for f in (VideoEditor,AudioEditor,MainFrame):
             page_name = f.__name__
             frame = f(parent = background,controller = self)
             self.frames[page_name] = frame

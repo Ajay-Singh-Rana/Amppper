@@ -14,25 +14,13 @@ from tkinter import ttk
 from tkinter import messagebox
 import threading
 import time
-
-class Browse:
-    def __init__(self):
-        self.filename = ''
-        self.thread = 0
-
-    def browse(self):
-        self.filename = filedialog.askopenfilename()
-        if(self.filename):
-            self.label.config(text = os.path.split(self.filename)[1])
+from interfaces import CFrame,StandardWindow
 
 
 # frame for trimming an audio file
-class Trim(tk.Frame,Browse):
+class Trim(CFrame):
     def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
-        Browse.__init__(self)
-        self.controller = controller
-        self.config(bg = '#2AA2BC')
+        CFrame.__init__(self,parent,controller)
 
         self.label = tk.Label(self,text = '---Empty Selection---',
         width = 20,pady = 5,bg = '#ee3456')
@@ -87,7 +75,7 @@ class Trim(tk.Frame,Browse):
         thread.start()
     
     def browse(self):
-        Browse.browse(self)
+        CFrame.browse(self)
         self.label.update()
         if(self.filename):
             try:
@@ -146,12 +134,9 @@ class Trim(tk.Frame,Browse):
 
 
 # frame for changing audio formats
-class ChangeFormat(tk.Frame,Browse):
+class ChangeFormat(CFrame):
     def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
-        Browse.__init__(self)
-        self.controller = controller
-        self.config(bg = '#2AA2BC')
+        CFrame.__init__(self,parent,controller)
 
         self.label = tk.Label(self,text = '---Empty Selection---',
         width = 20,pady = 5,bg = '#ee3456')
@@ -220,13 +205,10 @@ class ChangeFormat(tk.Frame,Browse):
 
 
 # frame for joining audio files
-class JoinAudio(tk.Frame,Browse):
+class JoinAudio(CFrame):
     def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
-        Browse.__init__(self)
-        self.controller = controller
+        CFrame.__init__(self,parent,controller)
         self.filename_1 ,self.filename_2 = None,None
-        self.config(bg = '#2AA2BC')
 
         self.file_label_1 = tk.Label(self,text = '---Empty Selection---',
         bg = '#ee3456',pady = 5,width = 20)
@@ -271,7 +253,7 @@ class JoinAudio(tk.Frame,Browse):
         self.queue.grid(row = 3,column = 1,padx = 10,pady = 10)
     
     def browse(self,num):
-        Browse.browse(self)
+        CFrame.browse(self)
         if(num == 1):
             self.filename_1 = self.filename
         else:
@@ -329,46 +311,28 @@ class JoinAudio(tk.Frame,Browse):
 
 
 # main frame for the audio editor
-class AudioEditor(tk.Frame):
+class AudioEditor(StandardWindow):
     def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
-        self.controller = controller
-        self.frames = {}
-        self.background = tk.PhotoImage(file = 'icons/amppper.png')
-        im_height,im_width = self.background.height(), self.background.width()
+        StandardWindow.__init__(self,parent,controller)
 
-        background = tk.Canvas(self,height = im_height,width = im_width)
-        background.pack(fill = 'both',expand = True)
-
-        background.create_image(0,0,image = self.background,anchor = 'nw')
-
-        container = tk.Frame(self,width = 300,height = 250)
-        container.place(x = 155,y = 160)
-
-        trim = tk.Button(background,text = 'Trim',width= 5,
+        trim = tk.Button(self.background,text = 'Trim',width= 5,
         command = lambda:self.show_frame('Trim','Trim'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
         trim.place(x = 30,y = 30)
 
-        button = tk.Button(background,text = 'Convert',width = 5,
+        button = tk.Button(self.background,text = 'Convert',width = 5,
         command = lambda:self.show_frame('ChangeFormat','Convert'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
         button.place(x = 130,y = 30)
 
-        audio_join = tk.Button(background,text = 'Join',width = 5,
+        audio_join = tk.Button(self.background,text = 'Join',width = 5,
         command = lambda:self.show_frame('JoinAudio','Join Audio'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
         audio_join.place(x = 230,y = 30)
-        
-        button = tk.Button(background,text = 'Home',width = 5,
-        command = lambda:self.controller.show_frame('MainFrame'),relief = 'flat',
-        bg = '#2abc8d',activebackground = '#aabc8d')
-        button.place(x = 330,y = 30)
-
 
         for f in (JoinAudio,ChangeFormat,Trim):
             page_name = f.__name__
-            frame = f(parent = container,controller = self)
+            frame = f(parent = self.container,controller = self)
             self.frames[page_name] = frame
             frame.grid(row = 0,column = 0,sticky = 'nesw')
     
