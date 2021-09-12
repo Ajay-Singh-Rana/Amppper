@@ -25,4 +25,4 @@ A GUI application with the following featues:
 ### Screenshots
    Main Window                                     |     Audio Tools Window
    :----------------------------------------------:|:----------------------------------------------:
-   ![Main Window](https://i.imgur.com/obofvrT.png) | ![Audio Tools Window](https://imgur.com/obofvrT)
+   ![Main Window](https://i.imgur.com/obofvrT.png) | ![Audio Tools Window](https://i.imgur.com/obofvrT.png)
