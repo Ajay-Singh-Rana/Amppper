@@ -253,20 +253,16 @@ class JoinAudio(CFrame):
         self.queue.grid(row = 3,column = 1,padx = 10,pady = 10)
     
     def browse(self,num):
-        CFrame.browse(self)
+        CFrame.browse(self,0)
         if(num == 1):
             self.filename_1 = self.filename
+            if(self.filename_1):
+                self.file_label_1.config(text = os.path.split(self.filename_1)[1])
         else:
             self.filename_2 = self.filename
-        self.set_labels()
-    
-    def set_labels(self):
-        if(self.filename_1):
-            self.file_label_1.config(text = os.path.split(self.filename_1)[1])
-        
-        if(self.filename_2):
-            self.file_label_2.config(text = os.path.split(self.filename_2)[1])
-
+            if(self.filename_2):
+                self.file_label_2.config(text = os.path.split(self.filename_2)[1])
+       
     def run_thread(self):
         self.thread += 1
         thread = threading.Thread(target = self.join_audio)
@@ -316,17 +312,17 @@ class AudioEditor(StandardWindow):
         StandardWindow.__init__(self,parent,controller)
 
         trim = tk.Button(self.background,text = 'Trim',width= 5,
-        command = lambda:self.show_frame('Trim','Trim'),relief = 'flat',
+        command = lambda:self.show_frame('Trim','Audio Tools','Trim'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
         trim.place(x = 30,y = 30)
 
         button = tk.Button(self.background,text = 'Convert',width = 5,
-        command = lambda:self.show_frame('ChangeFormat','Convert'),relief = 'flat',
+        command = lambda:self.show_frame('ChangeFormat','Audio Tools','Convert'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
         button.place(x = 130,y = 30)
 
         audio_join = tk.Button(self.background,text = 'Join',width = 5,
-        command = lambda:self.show_frame('JoinAudio','Join Audio'),relief = 'flat',
+        command = lambda:self.show_frame('JoinAudio','Audio Tools','Join Audio'),relief = 'flat',
         bg = '#2abc8d',activebackground = '#aabc8d')
         audio_join.place(x = 230,y = 30)
 
@@ -335,8 +331,3 @@ class AudioEditor(StandardWindow):
             frame = f(parent = self.container,controller = self)
             self.frames[page_name] = frame
             frame.grid(row = 0,column = 0,sticky = 'nesw')
-    
-    def show_frame(self,page_name,title):
-        frame = self.frames[page_name]
-        frame.tkraise()
-        self.controller.title(f'Amppper -> Audio Tools -> {title}')

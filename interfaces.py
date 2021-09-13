@@ -25,9 +25,9 @@ class CFrame(tk.Frame):
         self.controller = controller
         self.config(bg = '#2AA2BC')
 
-    def browse(self):
+    def browse(self,present = 1):
         self.filename = filedialog.askopenfilename()
-        if(self.filename):
+        if(self.filename and present):
             self.label.config(text = os.path.split(self.filename)[1])
 
 
