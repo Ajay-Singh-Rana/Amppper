@@ -12,7 +12,6 @@ import os
 from tkinter import filedialog
 from tkinter import ttk
 from tkinter import messagebox
-import threading
 import time
 from interfaces import CFrame,StandardWindow
 
@@ -57,7 +56,7 @@ class Trim(CFrame):
 
         trim = tk.Button(self,text = 'Trim',width = 10,
         relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d',
-        command = self.run_thread)
+        command = lambda: self.run_thread(self.trim))
         trim.grid(row = 4,column = 0,columnspan = 2,padx = 10,pady = 5)
 
         self.status = tk.Label(self,text = 'No process..!',
@@ -68,11 +67,6 @@ class Trim(CFrame):
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
         self.queue.grid(row = 5,column = 1,padx = 10,pady = 5)
 
-    
-    def run_thread(self):
-        thread = threading.Thread(target = self.trim)
-        self.thread += 1
-        thread.start()
     
     def browse(self):
         CFrame.browse(self)
@@ -156,7 +150,7 @@ class ChangeFormat(CFrame):
 
         convert = tk.Button(self,text = 'Convert',width = 10,
         relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d',
-        command = self.run_thread)
+        command = lambda: self.run_thread(self.convert))
         convert.grid(row = 1,column = 1,padx = 10,pady = 20)
 
         self.status = tk.Label(self,text = 'No process..!',
@@ -166,11 +160,7 @@ class ChangeFormat(CFrame):
         self.queue = tk.Label(self,text = 'Queued : 0',
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
         self.queue.grid(row = 2,column = 1,padx = 10,pady = 20)
-    
-    def run_thread(self):
-        self.thread += 1
-        thread = threading.Thread(target = self.convert)
-        thread.start()
+
     
     def convert(self):
         if(self.filename):
@@ -238,7 +228,7 @@ class JoinAudio(CFrame):
         self.export_as.current(0)
 
         join_ = tk.Button(self,text='Join',relief = 'flat',bg = '#2abc8d',
-        activebackground = '#aabc8d',command = self.run_thread)
+        activebackground = '#aabc8d',command = lambda: self.run_thread(self.join_audio))
 
         join_.grid(row = 2,column = 1,padx = 10,pady = 10)
 
@@ -262,11 +252,7 @@ class JoinAudio(CFrame):
             self.filename_2 = self.filename
             if(self.filename_2):
                 self.file_label_2.config(text = os.path.split(self.filename_2)[1])
-       
-    def run_thread(self):
-        self.thread += 1
-        thread = threading.Thread(target = self.join_audio)
-        thread.start()
+
 
     def join_audio(self):
         if(self.filename_1 and self.filename_2):

@@ -6,6 +6,9 @@ This file contains all the code for the video processing part of the application
 
 import os
 import tkinter as tk
+from tkinter import messagebox
+from tkinter import filedialog
+from tkinter import ttk
 from moviepy.editor import VideoFileClip
 from interfaces import CFrame, StandardWindow
 
@@ -14,7 +17,6 @@ from interfaces import CFrame, StandardWindow
 class Mute(CFrame):
     def __init__(self,parent,controller):
         CFrame.__init__(self,parent,controller)
-        self.saveas = ''
         
         self.file_label = tk.Label(self,text = '---Empty Selection---',
         padx = 10,pady = 5,bg = '#ee3456')
@@ -24,6 +26,11 @@ class Mute(CFrame):
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
         self.add.grid(row = 0, column = 1,padx = 10)
 
+        self.mute = tk.Button(self,text= 'Mute',
+        command = lambda: self.run_thread(self.mute_file),
+        bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
+        self.mute.grid(row = 1,columnspan = 2,padx = 10)
+
         self.status = tk.Label(self,text = 'No process..!',
         width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
         self.status.grid(row = 2,column = 0,padx = 10,pady = 5)
@@ -32,17 +39,53 @@ class Mute(CFrame):
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
         self.queue.grid(row = 2,column = 1,padx = 10,pady = 5)
 
-    def mute(self):
+    def mute_file(self):
         try:
             clip = VideoFileClip(self.filename)
-            clip.audio.write_audiofile(self.saveas,audio = False)
+            clip.write_videofile(self.filename,audio = False)
         except:
-            messagebox.showerror(title = 'Error',message = 'Error converting to audio')
+            messagebox.showerror(title = 'Error',message = 'Error muting video')
 
 
 class Extract(CFrame):
     def __init__(self,parent,controller):
         CFrame.__init__(self,parent,controller)
+        self.save_as = ''
+        
+        self.file_label = tk.Label(self,text = '---Empty Selection---',
+        padx = 10,pady = 5,bg = '#ee3456')
+        self.file_label.grid(row = 0,column = 0,padx = 10,pady = 10)
+
+        self.add = tk.Button(self,text = 'Select File',command = self.browse,
+        bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
+        self.add.grid(row = 0, column = 1,padx = 10)
+
+        self.export_as = ttk.Combobox(self,
+        values = ('mp3','flv','ogg','wav','wma','avi'),state = 'readonly')
+
+        self.export_as.grid(row = 1, column = 0,padx = 10,pady = 10)
+        self.export_as.current(0)
+
+        self.extract = tk.Button(self,text= 'Extract',
+        command = lambda: self.run_thread(self.extract_file),
+        bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
+        self.extract.grid(row = 1,column = 1,padx = 10)
+
+        self.status = tk.Label(self,text = 'No process..!',
+        width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.status.grid(row = 2,column = 0,padx = 10,pady = 5)
+
+        self.queue = tk.Label(self,text = 'Queued : 0',
+        width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.queue.grid(row = 2,column = 1,padx = 10,pady = 5)
+
+    def extract_file(self):
+        self.saveas = filedialog.asksaveasfilename()
+        try:
+            clip = VideoFileClip(self.filename)
+            clip.audio.write_audiofile(self.save_as,audio = False)
+        except:
+            messagebox.showerror(title = 'Error',message = 'Error converting to audio')
 
 
 

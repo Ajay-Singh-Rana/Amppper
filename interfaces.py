@@ -9,6 +9,7 @@ modules in order to implement common functionalities
 import os
 from tkinter import filedialog
 import tkinter as tk
+import threading
 
 # a class to browse files and implement the common frame
 class CFrame(tk.Frame):
@@ -30,6 +31,10 @@ class CFrame(tk.Frame):
         if(self.filename and present):
             self.label.config(text = os.path.split(self.filename)[1])
 
+    def run_thread(self,target_func):
+        self.thread += 1
+        thread = threading.Thread(target = target_func)
+        thread.start()
 
 # a class to create the common window for all the tools
 class StandardWindow(tk.Frame):
