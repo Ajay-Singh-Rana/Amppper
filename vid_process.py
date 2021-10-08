@@ -9,6 +9,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
+import time
 from moviepy.editor import VideoFileClip
 from interfaces import CFrame, StandardWindow
 
@@ -18,9 +19,9 @@ class Mute(CFrame):
     def __init__(self,parent,controller):
         CFrame.__init__(self,parent,controller)
         
-        self.file_label = tk.Label(self,text = '---Empty Selection---',
+        self.label = tk.Label(self,text = '---Empty Selection---',
         padx = 10,pady = 5,bg = '#ee3456')
-        self.file_label.grid(row = 0,column = 0,padx = 10,pady = 10)
+        self.label.grid(row = 0,column = 0,padx = 10,pady = 10)
 
         self.add = tk.Button(self,text = 'Select File',command = self.browse,
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
@@ -39,22 +40,45 @@ class Mute(CFrame):
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
         self.queue.grid(row = 2,column = 1,padx = 10,pady = 5)
 
-    def mute_file(self):
-        try:
-            clip = VideoFileClip(self.filename)
-            clip.write_videofile(self.filename,audio = False)
-        except:
-            messagebox.showerror(title = 'Error',message = 'Error muting video')
+    def run_thread(self,target_func):
+        CFrame.run_thread(self,target_func)
+        if(self.thread >= 2):
+            self.mute.config(state = tk.DISABLED)
 
+
+    def mute_file(self):
+        if(self.filename):
+            save_as = filedialog.asksaveasfilename(defaultextension = f'.mp4',
+            filetypes = ((f'.mp4 files',f'*.mp4'),))
+            if(save_as):
+                try:
+                    self.status.config(text = 'Processing...',bg = '#2a8d12')
+                    self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
+                    clip = VideoFileClip(self.filename)
+                    clip.write_videofile(self.filename,audio = False)
+                    self.status.config(text = 'Success..!',bg = '#2a8d12')
+                except:
+                    self.status.config(text = 'Failed..!',bg = '#ee3456')
+                    messagebox.showerror(title = 'Error',message = 'Error muting video')
+            
+            self.thread -= 1
+            if(self.thread < 2):
+                self.mute.config(state = tk.NORMAL)
+            self.queue.config(text = f'Queued : {self.thread}')
+            if(self.thread == 0):
+                time.sleep(1)
+                self.queue.config(bg = '#ae34d9')
+                self.status.config(text = 'No Process..!',bg = '#ae34d9')
+        else:
+            messagebox.showerror(title = 'File Error',message = 'Select a File First..!')
 
 class Extract(CFrame):
     def __init__(self,parent,controller):
         CFrame.__init__(self,parent,controller)
-        self.save_as = ''
         
-        self.file_label = tk.Label(self,text = '---Empty Selection---',
+        self.label = tk.Label(self,text = '---Empty Selection---',
         padx = 10,pady = 5,bg = '#ee3456')
-        self.file_label.grid(row = 0,column = 0,padx = 10,pady = 10)
+        self.label.grid(row = 0,column = 0,padx = 10,pady = 10)
 
         self.add = tk.Button(self,text = 'Select File',command = self.browse,
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
@@ -79,14 +103,39 @@ class Extract(CFrame):
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
         self.queue.grid(row = 2,column = 1,padx = 10,pady = 5)
 
-    def extract_file(self):
-        self.saveas = filedialog.asksaveasfilename()
-        try:
-            clip = VideoFileClip(self.filename)
-            clip.audio.write_audiofile(self.save_as,audio = False)
-        except:
-            messagebox.showerror(title = 'Error',message = 'Error converting to audio')
+    
+    def run_thread(self,target_func):
+        CFrame.run_thread(self,target_func)
+        if(self.thread >= 2):
+            self.extract.config(state = tk.DISABLED)
 
+    def extract_file(self):
+        if(self.filename):
+            ext = self.export_as.get()
+            save_as = filedialog.asksaveasfilename(defaultextension = f'.{ext}',
+            filetypes = ((f'.{ext} files',f'*.{ext}'),))
+            if(save_as):
+                self.status.config(text = 'Processing...',bg = '#2a8d12')
+                self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
+                try:
+                    clip = VideoFileClip(self.filename)
+                    clip.audio.write_audiofile(save_as)
+                    self.status.config(text = 'Success..!',bg = '#2a8d12')
+                except:
+                    self.status.config(text = 'Failed..!',bg = '#ee3456')
+                    messagebox.showerror(title = 'Error',message = 'Error converting to audio')
+
+                    
+            self.thread -= 1
+            if(self.thread < 2):
+                self.extract.config(state = tk.NORMAL)
+            self.queue.config(text = f'Queued : {self.thread}')
+            if(self.thread == 0):
+                time.sleep(1)
+                self.queue.config(bg = '#ae34d9')
+                self.status.config(text = 'No Process..!',bg = '#ae34d9')
+        else:
+            messagebox.showerror(title = 'File Error',message = 'Select a File First..!')
 
 
 # a class to implement the join of two video files
