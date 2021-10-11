@@ -12,16 +12,17 @@ A GUI application with the following featues:
     - [ ] Add filters
     - [ ] Resize
     - [ ] Change format
-  - **Video MAnipulation** (proposed)
+  - **Video Manipulation** (proposed)
     - [ ] Trim
     - [x] Extract Audio
     - [x] Mute
     - [ ] Join (under development)
   - **PDF tools** (proposed)
     - [ ] Split into pages
-    - [ ] Convert to text
+    - [x] Convert to text
     - [ ] Read
     - [ ] Text to PDF
+    - [x] Join PDF files
     
 ### Screenshots
    Main Window                                     |     Audio Tools Window
