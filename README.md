@@ -18,7 +18,7 @@ A GUI application with the following featues:
     - [x] Mute
     - [ ] Join (under development)
   - **PDF tools** (proposed)
-    - [ ] Split into pages
+    - [x] Split into pages
     - [x] Convert to text
     - [ ] Read
     - [ ] Text to PDF

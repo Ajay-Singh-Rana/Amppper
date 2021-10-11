@@ -11,6 +11,7 @@ import os
 class PDF2TEXT(CFrame):
     def __init__(self,parent,controller):
         CFrame.__init__(self,parent,controller)
+       
         self.label = tk.Label(self,text = '---Empty Selection---',
         padx = 10,pady = 5,bg = '#ee3456')
         self.label.grid(row = 0,column = 0,padx = 10,pady = 20)
@@ -149,6 +150,87 @@ class SplitPage(CFrame):
     def __init__(self,parent,controller):
         CFrame.__init__(self,parent,controller)
         
+        self.label = tk.Label(self,text = '---Empty Selection---',
+        padx = 10,pady = 5,bg = '#ee3456')
+        self.label.grid(row = 0,column = 0,padx = 10,pady = 20)
+
+        self.add = tk.Button(self,text = 'Select File',command = self.browse,
+        bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
+        self.add.grid(row = 0, column = 1,padx = 10,pady = 20)
+
+        self.numPages = tk.Label(self,bg = '#2AA2BC')
+        self.numPages.grid(row = 1,column = 0,padx = 10,pady = 5)
+
+        self.textLabel = tk.Label(self.numPages,text = 'Set of Pages : ',
+        bg = '#2AA2BC')
+        self.textLabel.grid(row = 0,column = 0)
+
+        self.entry = tk.Entry(self.numPages,relief = 'sunken',
+        selectbackground = '#aa348c',width = 3)
+        self.entry.insert(0,'1')
+        self.entry.grid(row = 0,column = 1)
+
+        self.split = tk.Button(self,text = 'Split',
+        command = lambda: self.run_thread(self.split_pages),
+        bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',
+        width = 10)
+        self.split.grid(row = 1,column = 1,padx = 10,pady = 15)
+
+        self.status = tk.Label(self,text = 'No process..!',
+        width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.status.grid(row = 2,column = 0,padx = 10,pady = 15)
+
+        self.queue = tk.Label(self,text = 'Queued : 0',
+        width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.queue.grid(row = 2,column = 1,padx = 10,pady = 15)
+
+
+    def split_pages(self):
+        if(self.filename):
+            try:
+                input_ = PyPDF2.PdfFileReader(self.filename)
+                self.status.config(text = 'Processing...',bg = '#2a8d12')
+                self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
+                self.filename = ''
+                self.label.config(text = '---Empty Selection---')
+                skip = self.entry.get()
+                if(skip == ''):
+                    skip = 1
+                else:
+                    skip = int(self.entry.get())
+                
+                total= input_.numPages + 1
+                if(skip == 1):
+                    for i in range(0,total):
+                        writer = PyPDF2.PdfFileWriter()
+                        page = input_.getPage(i)
+                        writer.addPage(page)
+                        with open(f'page_{i}.pdf','wb') as file:
+                            writer.write(file)
+                else:
+                    for i in range(0,total,skip):
+                        writer = PyPDF2.PdfFileWriter()
+                        start = i
+                        for j in range(i,i + skip):
+                            page = input_.getPage(j)
+                            writer.addPage(page)
+                            if(j == total):
+                                break
+                        with open(f'pages_{start}_to_{start+skip}.pdf','wb') as file:
+                            writer.write(file)
+                
+                self.status.config(text = 'Success..!',bg = '#2a8d12')
+            except:
+                self.status.config(text = 'Failed..!',bg = '#ee3456')
+        else:
+            messagebox.showerror(title = 'Error..!',message = 'Select the files to join..!')
+        
+        self.thread -= 1
+        self.queue.config(text = f'Queued : {self.thread}')
+        if(self.thread == 0):
+            time.sleep(1)
+            self.queue.config(bg = '#ae34d9')
+            self.status.config(text = 'No Process..!',bg = '#ae34d9')
 
 
 # this class implements the video tools window
@@ -156,22 +238,22 @@ class PDFOptions(StandardWindow):
     def __init__(self,parent,controller):
         StandardWindow.__init__(self,parent,controller)
 
-        # mute = tk.Button(self,text = 'Mute',bg = '#2abc8d',
-        # activebackground = '#aabc8d',relief = 'flat',width = 5,
-        # command = lambda: self.show_frame('Mute','Video Tools','Mute'))
-        # mute.place(x = 30,y = 30)
-
         extract = tk.Button(self,text = 'PDF2Text',bg = '#2abc8d',
         activebackground = '#aabc8d',relief = 'flat',width = 8,
         command = lambda: self.show_frame('PDF2TEXT','PDF Tools','Extract Text'))
-        extract.place(x = 130,y = 30)
+        extract.place(x = 30,y = 30)
 
         join_pdf = tk.Button(self,text = 'Join',bg = '#2abc8d',
         activebackground = '#aabc8d',relief = 'flat',width = 5,
         command = lambda: self.show_frame('JoinPDF','PDF Tools','Join PDF'))
-        join_pdf.place(x = 230,y = 30)
+        join_pdf.place(x = 140,y = 30)
 
-        for f in (JoinPDF,PDF2TEXT):
+        split = tk.Button(self,text = 'Split',bg = '#2abc8d',
+        activebackground = '#aabc8d',relief = 'flat',width = 5,
+        command = lambda: self.show_frame('SplitPage','Video Tools','Split Pages'))
+        split.place(x = 230,y = 30)
+
+        for f in (SplitPage,JoinPDF,PDF2TEXT):
             page_name = f.__name__
             frame = f(parent = self.container,controller = self)
             self.frames[page_name] = frame
