@@ -16,7 +16,7 @@ A GUI application with the following featues:
     - [ ] Trim
     - [x] Extract Audio
     - [x] Mute
-    - [x] Join (improvement required)
+    - [x] Join
   - **PDF tools** (proposed)
     - [x] Split into pages
     - [x] Convert to text

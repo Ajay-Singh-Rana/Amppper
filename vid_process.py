@@ -207,8 +207,7 @@ class JoinVideo(CFrame):
                     self.filename_2 = ''
                     self.filelabel_2.config(text = '---Empty Selection---')
                     final_clip = concatenate_videoclips([clip_1,clip_2])
-                    final_clip.write_videofile(save_as)
-                    print(4)
+                    final_clip.write_videofile(save_as,threads = 4,progress_bar = False)
                     self.status.config(text = 'Success..!',bg = '#2a8d12')
                 except:
                     self.filelabel_1.config(text = '---Empty Selection---')
@@ -249,7 +248,7 @@ class VideoEditor(StandardWindow):
         command = lambda: self.show_frame('JoinVideo','Video Tools','Join'))
         join_video.place(x = 230,y = 30)
 
-        for f in (Mute,Extract,JoinVideo):
+        for f in (Extract,JoinVideo,Mute):
             page_name = f.__name__
             frame = f(parent = self.container,controller = self)
             self.frames[page_name] = frame
