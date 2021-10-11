@@ -10,11 +10,10 @@ import tkinter as tk
 from tkinter import filedialog
 from img_process import ImageEditor
 from aud_process import AudioEditor
+from  pdf_options import PDFOptions
 import os
 from vid_process import VideoEditor
 
-if(not os.path.isdir('Amppper')):
-    os.mkdir('Amppper')
 
 class MainFrame(tk.Frame):
     def __init__(self,parent,controller):
@@ -30,10 +29,16 @@ class MainFrame(tk.Frame):
 
         background.create_image(0,0,image = self.background,anchor = 'nw')
 
-        img_button = tk.Button(background,text = 'Image Options',pady = 5,
-        padx = 5,width = 15,command = self.image_options,relief = 'flat',
-        bg = '#2abc8d',activebackground = '#aabc8d')
-        img_button.place(x = 420, y = 170)
+        # img_button = tk.Button(background,text = 'Image Options',pady = 5,
+        # padx = 5,width = 15,command = self.image_options,relief = 'flat',
+        # bg = '#2abc8d',activebackground = '#aabc8d')
+        # img_button.place(x = 420, y = 170)
+        
+        pdf_button = tk.Button(background,text = 'PDF Options',pady = 5,
+        padx = 5,width = 15,
+        command = lambda: self.controller.show_frame('PDFOptions','PDF Tools -> PDF to Text'),
+        relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
+        pdf_button.place(x = 420, y = 170)
 
         audio_button = tk.Button(background,text = 'Audio Options',pady = 5,
         padx = 5,width = 15,
@@ -47,26 +52,23 @@ class MainFrame(tk.Frame):
         relief = 'flat',bg = '#2abc8d',activebackground = '#aabc8d')
         video_button.place(x = 420, y = 250)
 
-    def image_options(self):
-        popup = tk.Toplevel()
+    # def image_options(self):
+    #     popup = tk.Toplevel()
         
-        def img_select():
-            file_name = filedialog.askopenfilename()
-            popup.destroy()
+    #     def img_select():
+    #         file_name = filedialog.askopenfilename()
+    #         popup.destroy()
 
-            if(file_name):
-                ImageEditor(file_name)
+    #         if(file_name):
+    #             ImageEditor(file_name)
 
-        create = tk.Button(popup,text = 'Create an Image',padx = 5,pady = 5,width = 15)
-        create.pack(padx = 5,pady = 5)
+    #     create = tk.Button(popup,text = 'Create an Image',padx = 5,pady = 5,width = 15)
+    #     create.pack(padx = 5,pady = 5)
 
-        edit = tk.Button(popup,text = 'Edit an Image',padx = 5,pady = 5,
-        width = 15,command = img_select)
-        edit.pack(padx = 5,pady = 5)
+    #     edit = tk.Button(popup,text = 'Edit an Image',padx = 5,pady = 5,
+    #     width = 15,command = img_select)
+    #     edit.pack(padx = 5,pady = 5)
         
- 
-    def video_options(self):
-        pass
 
 # main window 
 class App(tk.Tk):
@@ -82,13 +84,15 @@ class App(tk.Tk):
         self.title('Amppper')
         self.geometry('610x390')
         self.resizable(False,False)
+        self.icon = tk.PhotoImage(file = 'icons/logo.png')
+        self.iconphoto(False,self.icon)
         self.frames = {}
         #self.wm_attributes('-transparentcolor','#a1a1a1')
 
         background = tk.Frame(self)
         background.pack(fill = 'both',expand = True)
 
-        for f in (VideoEditor,AudioEditor,MainFrame):
+        for f in (PDFOptions,VideoEditor,AudioEditor,MainFrame):
             page_name = f.__name__
             frame = f(parent = background,controller = self)
             self.frames[page_name] = frame

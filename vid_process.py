@@ -55,11 +55,12 @@ class Mute(CFrame):
                     self.status.config(text = 'Processing...',bg = '#2a8d12')
                     self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
                     clip = VideoFileClip(self.filename)
+                    self.filename = ''
+                    self.label.config(text = '---Empty Selection---')
                     clip.write_videofile(self.filename,audio = False)
                     self.status.config(text = 'Success..!',bg = '#2a8d12')
                 except:
                     self.status.config(text = 'Failed..!',bg = '#ee3456')
-                    messagebox.showerror(title = 'Error',message = 'Error muting video')
             
             self.thread -= 1
             if(self.thread < 2):
@@ -119,11 +120,12 @@ class Extract(CFrame):
                 self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
                 try:
                     clip = VideoFileClip(self.filename)
+                    self.filename = ''
+                    self.label.config(text = '---Empty Selection---')
                     clip.audio.write_audiofile(save_as)
                     self.status.config(text = 'Success..!',bg = '#2a8d12')
                 except:
                     self.status.config(text = 'Failed..!',bg = '#ee3456')
-                    messagebox.showerror(title = 'Error',message = 'Error converting to audio')
 
                     
             self.thread -= 1
@@ -154,11 +156,11 @@ class JoinVideo(CFrame):
 
         self.filelabel_2 = tk.Label(self,text = '---Empty Selection---',
         padx = 10,pady = 5,bg = '#ee3456')
-        self.filelabel_2.grid(row = 0,column = 0,padx = 10,pady = 10)
+        self.filelabel_2.grid(row = 1,column = 0,padx = 10,pady = 10)
 
         self.add_2 = tk.Button(self,text = 'Select File',command = lambda: self.browse(2),
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
-        self.add_2.grid(row = 0, column = 1,padx = 10)
+        self.add_2.grid(row = 1, column = 1,padx = 10)
 
     def browse(self,num):
         CFrame.browse(self,0)
