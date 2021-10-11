@@ -10,7 +10,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 import time
-from moviepy.editor import VideoFileClip
+from moviepy.editor import VideoFileClip,concatenate_videoclips
 from interfaces import CFrame, StandardWindow
 
 
@@ -25,20 +25,20 @@ class Mute(CFrame):
 
         self.add = tk.Button(self,text = 'Select File',command = self.browse,
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
-        self.add.grid(row = 0, column = 1,padx = 10)
+        self.add.grid(row = 0, column = 1,padx = 10,pady = 10)
 
         self.mute = tk.Button(self,text= 'Mute',
         command = lambda: self.run_thread(self.mute_file),
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
-        self.mute.grid(row = 1,columnspan = 2,padx = 10)
+        self.mute.grid(row = 1,columnspan = 2,padx = 10,pady = 20)
 
         self.status = tk.Label(self,text = 'No process..!',
         width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
-        self.status.grid(row = 2,column = 0,padx = 10,pady = 5)
+        self.status.grid(row = 2,column = 0,padx = 10,pady = 15)
 
         self.queue = tk.Label(self,text = 'Queued : 0',
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
-        self.queue.grid(row = 2,column = 1,padx = 10,pady = 5)
+        self.queue.grid(row = 2,column = 1,padx = 10,pady = 15)
 
     def run_thread(self,target_func):
         CFrame.run_thread(self,target_func)
@@ -62,16 +62,17 @@ class Mute(CFrame):
                 except:
                     self.status.config(text = 'Failed..!',bg = '#ee3456')
             
-            self.thread -= 1
-            if(self.thread < 2):
-                self.mute.config(state = tk.NORMAL)
-            self.queue.config(text = f'Queued : {self.thread}')
-            if(self.thread == 0):
-                time.sleep(1)
-                self.queue.config(bg = '#ae34d9')
-                self.status.config(text = 'No Process..!',bg = '#ae34d9')
         else:
             messagebox.showerror(title = 'File Error',message = 'Select a File First..!')
+        
+        self.thread -= 1
+        if(self.thread < 2):
+            self.mute.config(state = tk.NORMAL)
+        self.queue.config(text = f'Queued : {self.thread}')
+        if(self.thread == 0):
+            time.sleep(1)
+            self.queue.config(bg = '#ae34d9')
+            self.status.config(text = 'No Process..!',bg = '#ae34d9')
 
 class Extract(CFrame):
     def __init__(self,parent,controller):
@@ -88,21 +89,21 @@ class Extract(CFrame):
         self.export_as = ttk.Combobox(self,
         values = ('mp3','flv','ogg','wav','wma','avi'),state = 'readonly')
 
-        self.export_as.grid(row = 1, column = 0,padx = 10,pady = 10)
+        self.export_as.grid(row = 1, column = 0,padx = 10,pady = 20)
         self.export_as.current(0)
 
         self.extract = tk.Button(self,text= 'Extract',
         command = lambda: self.run_thread(self.extract_file),
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
-        self.extract.grid(row = 1,column = 1,padx = 10)
+        self.extract.grid(row = 1,column = 1,padx = 10,pady = 20)
 
         self.status = tk.Label(self,text = 'No process..!',
         width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
-        self.status.grid(row = 2,column = 0,padx = 10,pady = 5)
+        self.status.grid(row = 2,column = 0,padx = 10,pady = 15)
 
         self.queue = tk.Label(self,text = 'Queued : 0',
         width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
-        self.queue.grid(row = 2,column = 1,padx = 10,pady = 5)
+        self.queue.grid(row = 2,column = 1,padx = 10,pady = 15)
 
     
     def run_thread(self,target_func):
@@ -127,17 +128,17 @@ class Extract(CFrame):
                 except:
                     self.status.config(text = 'Failed..!',bg = '#ee3456')
 
-                    
-            self.thread -= 1
-            if(self.thread < 2):
-                self.extract.config(state = tk.NORMAL)
-            self.queue.config(text = f'Queued : {self.thread}')
-            if(self.thread == 0):
-                time.sleep(1)
-                self.queue.config(bg = '#ae34d9')
-                self.status.config(text = 'No Process..!',bg = '#ae34d9')
         else:
             messagebox.showerror(title = 'File Error',message = 'Select a File First..!')
+        
+        self.thread -= 1
+        if(self.thread < 2):
+            self.extract.config(state = tk.NORMAL)
+        self.queue.config(text = f'Queued : {self.thread}')
+        if(self.thread == 0):
+            time.sleep(1)
+            self.queue.config(bg = '#ae34d9')
+            self.status.config(text = 'No Process..!',bg = '#ae34d9')
 
 
 # a class to implement the join of two video files
@@ -162,6 +163,24 @@ class JoinVideo(CFrame):
         bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
         self.add_2.grid(row = 1, column = 1,padx = 10)
 
+        self.join = tk.Button(self,text= 'Join',
+        command = lambda: self.run_thread(self.join_file),
+        bg = '#2abc8d',relief = 'flat',activebackground = '#aabc8d',width = 10)
+        self.join.grid(row = 2,columnspan = 2,padx = 20)
+
+        self.status = tk.Label(self,text = 'No process..!',
+        width = 20,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.status.grid(row = 3,column = 0,padx = 10,pady = 10)
+
+        self.queue = tk.Label(self,text = 'Queued : 0',
+        width = 10,pady = 5,bg = '#ae34d9',fg = 'White',relief = 'sunken')
+        self.queue.grid(row = 3,column = 1,padx = 10,pady = 10)
+
+    def run_thread(self,target_func):
+        CFrame.run_thread(self,target_func)
+        if(self.thread >= 2):
+            self.join.config(state = tk.DISABLED)
+
     def browse(self,num):
         CFrame.browse(self,0)
         if(num == 1):
@@ -174,6 +193,41 @@ class JoinVideo(CFrame):
             if(self.filename_2):
                 self.filelabel_2.config(text = os.path.split(self.filename_1)[1])
 
+    def join_file(self):
+        if(self.filename_1 and self.filename_2):
+            save_as = filedialog.asksaveasfilename(defaultextension = '.mp4',filetypes = (('.mp4 files','*.mp4'),))
+            if(save_as):
+                try:
+                    self.status.config(text = 'Processing...',bg = '#2a8d12')
+                    self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
+                    clip_1 = VideoFileClip(self.filename_1)
+                    self.filename_1 = ''
+                    self.filelabel_1.config(text = '---Empty Selection---')
+                    clip_2 = VideoFileClip(self.filename_2)
+                    self.filename_2 = ''
+                    self.filelabel_2.config(text = '---Empty Selection---')
+                    final_clip = concatenate_videoclips([clip_1,clip_2])
+                    final_clip.write_videofile(save_as)
+                    print(4)
+                    self.status.config(text = 'Success..!',bg = '#2a8d12')
+                except:
+                    self.filelabel_1.config(text = '---Empty Selection---')
+                    self.filelabel_2.config(text = '---Empty Selection---')
+                    self.status.config(text = 'Failed..!',bg = '#ee3456')
+            else:
+                messagebox.showerror(title = 'Error',message = 'Provide a file name to save the output')
+
+        else:
+            messagebox.showerror(title = 'Error..!',message = 'Select the files to join..!')
+        
+        self.thread -= 1
+        if(self.thread < 2):
+            self.join.config(state = tk.NORMAL)
+        self.queue.config(text = f'Queued : {self.thread}')
+        if(self.thread == 0):
+            time.sleep(1)
+            self.queue.config(bg = '#ae34d9')
+            self.status.config(text = 'No Process..!',bg = '#ae34d9')
 
 # this class implements the video tools window
 class VideoEditor(StandardWindow):
