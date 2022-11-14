@@ -134,6 +134,8 @@ class JoinPDF(CFrame):
                     save_as = ''
                 except:
                     self.label.config(text = 'Failed..!',bg = '#ee3456')
+            else:
+                messagebox.showerror(title = 'Error..!',message = 'Give a name for the output file..!')
         else:
             messagebox.showerror(title = 'Error..!',message = 'Select the files to join..!')
         
@@ -187,41 +189,45 @@ class SplitPage(CFrame):
 
     def split_pages(self):
         if(self.filename):
-            try:
-                input_ = PyPDF2.PdfFileReader(self.filename)
-                self.status.config(text = 'Processing...',bg = '#2a8d12')
-                self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
-                self.filename = ''
-                self.label.config(text = '---Empty Selection---')
-                skip = self.entry.get()
-                if(skip == ''):
-                    skip = 1
-                else:
-                    skip = int(self.entry.get())
-                
-                total= input_.numPages + 1
-                if(skip == 1):
-                    for i in range(0,total):
-                        writer = PyPDF2.PdfFileWriter()
-                        page = input_.getPage(i)
-                        writer.addPage(page)
-                        with open(f'page_{i}.pdf','wb') as file:
-                            writer.write(file)
-                else:
-                    for i in range(0,total,skip):
-                        writer = PyPDF2.PdfFileWriter()
-                        start = i
-                        for j in range(i,i + skip):
-                            page = input_.getPage(j)
+            destination_directory = filedialog.askdirectory()
+            if(destination_directory):
+                try:
+                    input_ = PyPDF2.PdfFileReader(self.filename)
+                    self.status.config(text = 'Processing...',bg = '#2a8d12')
+                    self.queue.config(text = f'Queued : {self.thread}',bg = '#2a8d12')
+                    self.filename = ''
+                    self.label.config(text = '---Empty Selection---')
+                    skip = self.entry.get()
+                    if(skip == ''):
+                        skip = 1
+                    else:
+                        skip = int(self.entry.get())
+                    
+                    total= input_.numPages + 1
+                    if(skip == 1):
+                        for i in range(0,total):
+                            writer = PyPDF2.PdfFileWriter()
+                            page = input_.getPage(i)
                             writer.addPage(page)
-                            if(j == total):
-                                break
-                        with open(f'pages_{start}_to_{start+skip}.pdf','wb') as file:
-                            writer.write(file)
-                
-                self.status.config(text = 'Success..!',bg = '#2a8d12')
-            except:
-                self.status.config(text = 'Failed..!',bg = '#ee3456')
+                            with open(f'{destination_directory}/page_{i}.pdf','wb') as file:
+                                writer.write(file)
+                    else:
+                        for i in range(0,total,skip):
+                            writer = PyPDF2.PdfFileWriter()
+                            start = i
+                            for j in range(i,i + skip):
+                                page = input_.getPage(j)
+                                writer.addPage(page)
+                                if(j == total):
+                                    break
+                            with open(f'{destination_directory}/pages_{start}_to_{start+skip}.pdf','wb') as file:
+                                writer.write(file)
+                    
+                    self.status.config(text = 'Success..!',bg = '#2a8d12')
+                except:
+                    self.status.config(text = 'Failed..!',bg = '#ee3456')
+            else:
+                messagebox.showerror(title = 'Error..!',message = 'Select a directory to save the output files in..!')
         else:
             messagebox.showerror(title = 'Error..!',message = 'Select the files to join..!')
         
@@ -233,7 +239,7 @@ class SplitPage(CFrame):
             self.status.config(text = 'No Process..!',bg = '#ae34d9')
 
 
-# this class implements the video tools window
+# this class implements the PDF tools window
 class PDFOptions(StandardWindow):
     def __init__(self,parent,controller):
         StandardWindow.__init__(self,parent,controller)
