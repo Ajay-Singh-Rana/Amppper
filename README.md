@@ -46,5 +46,5 @@ To install run:
   ```
   
   ### Want to contribute..?
-  Thanks for considering contributing to the project.
+  Thanks for considering contribution to the project.
   Read the [CONTRIBUTING.md](https://github.com/Ajay-Singh-Rana/Amppper/blob/main/CONTRIBUTING.md) to learn more on how to contribute.
